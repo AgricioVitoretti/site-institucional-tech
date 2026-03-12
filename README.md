@@ -7,4 +7,4 @@
 ### Aprender a estrutura inteira de um site
 ### Aprender integração com banco de dados
 
-## Depois de tudo isso criar outro projeto para aprender react
+ Depois de tudo isso criar outro projeto para aprender react
