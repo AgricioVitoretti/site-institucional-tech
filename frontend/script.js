@@ -1,16 +1,5 @@
 console.log("script carregado");
 
-fetch("/api/mensagem-api")
-  .then((response) => response.json())
-  .then((data) => {
-    console.log("dados recebidos:", data);
-    const elemento = document.getElementById("mensagem-api");
-    elemento.textContent = data.mensagem;
-  })
-  .catch((error) => {
-    console.error("Erro ao buscar API:", error);
-  });
-
   fetch("/api/servicos")
     .then((response) => response.json())
     .then((servicos) => {
@@ -35,3 +24,38 @@ fetch("/api/mensagem-api")
     .catch((error) => {
       console.error("Erro ao buscar serviços:", error);
     })
+
+    const formContato = document.getElementById("form-contato");
+
+    if (formContato){
+    formContato.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const nome = document.getElementById("nome").value;
+      const email = document.getElementById("email").value;
+      const mensagem = document.getElementById("mensagem-form").value;
+
+      fetch("/api/contato", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nome,
+          email,
+          mensagem
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const status = document.getElementById("status-formulario");
+          status.textContent = data.mensagem;
+
+          formContato.reset();
+        })
+        .catch((error) => {
+          console.error("Erro ao enviar formulário");
+          status.textContent = "Erro ao enviar formulário.";
+        });
+    });
+    }
