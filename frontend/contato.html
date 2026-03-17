@@ -34,9 +34,19 @@
                 <div class="container">
                     <div class="contato-card">
                         <div class="contato-intro">
-                            <span class="contato-tag">Fale com a nossa equipe</span>
-                            <h2>Contato</h2>
-                            <p>Entre em contato para conhecer nossas soluções em tecnologia.</p>
+                            <div class="contato-intro-copy">
+                                <span class="contato-tag">Fale com a nossa equipe</span>
+                                <h2>Contato</h2>
+                                <p>Entre em contato para conhecer nossas soluções em tecnologia.</p>
+                            </div>
+
+                            <div class="contato-brand" aria-hidden="true">
+                                <div class="contato-brand-mark"></div>
+                                <div class="contato-brand-copy">
+                                    <strong>NovaTec</strong>
+                                    <small>studio</small>
+                                </div>
+                            </div>
                         </div>
 
                         <form id="form-contato">
@@ -52,7 +62,10 @@
 
                             <div class="campo-formulario">
                                 <label for="mensagem-form">Mensagem</label>
-                                <textarea id="mensagem-form" name="mensagem" rows="5" placeholder="Conte um pouco sobre o que você precisa." required></textarea>
+                                <textarea id="mensagem-form" name="mensagem" rows="5" maxlength="500" placeholder="Conte um pouco sobre o que você precisa." required></textarea>
+                                <div class="campo-apoio">
+                                    <span id="contador-mensagem">0</span>/500 caracteres
+                                </div>
                             </div>
 
                             <button type="submit" class="botao">Enviar</button>

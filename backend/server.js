@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const path =require("path");
+const path = require("path");
 
 const app = express();
 
@@ -35,7 +35,7 @@ app.post("/api/contato", (req, res) => {
     sucesso: true,
     mensagem: "Formulário enviado com sucesso!"
   });
-}); 
+});
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");

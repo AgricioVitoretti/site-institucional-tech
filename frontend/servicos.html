@@ -32,7 +32,22 @@
             </section>
 
             <section class="section-panel">
-                <div class="container">
+                <div class="container servicos-panel">
+                    <div class="servicos-toolbar">
+                        <label class="campo-busca" for="busca-servico">
+                            <span>Buscar serviço</span>
+                            <input type="search" id="busca-servico" placeholder="Ex.: suporte, site, infraestrutura">
+                        </label>
+
+                        <div class="filtros-servicos" aria-label="Filtrar serviços">
+                            <button type="button" class="filtro-servico ativo" data-filter="todos">Todos</button>
+                            <button type="button" class="filtro-servico" data-filter="suporte">Suporte</button>
+                            <button type="button" class="filtro-servico" data-filter="infra">Infraestrutura</button>
+                            <button type="button" class="filtro-servico" data-filter="web">Web</button>
+                        </div>
+                    </div>
+
+                    <p class="resultado-servicos" id="resultado-servicos">Carregando serviços...</p>
                     <div class="servicos" id="lista-servicos"></div>
                 </div>
             </section>
