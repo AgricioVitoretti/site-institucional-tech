@@ -1,92 +1,94 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
     <head>
-        <!-- Permite uso de acentuação -->
         <meta charset="UTF-8">
-        <!-- Permite adaptar melhor o layout em smartphone -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
-        <title>Site Institucional Tech</title>
+        <title>Tech Solutions | Início</title>
     </head>
     <body>
-
-        <header>
+        <header class="site-header">
             <div class="container">
-            <h1>Tech Solutions</h1>
-                <nav>
-                    <a href="#sobre">Sobre</a>
-                    <a href="#servicos">Serviços</a>
-                    <a href="#contato">Contato</a>
+                <a class="brand" href="index.html">Tech Solutions</a>
+                <nav class="site-nav">
+                    <a class="ativo" href="index.html">Início</a>
+                    <a href="sobre.html">Sobre</a>
+                    <a href="servicos.html">Serviços</a>
+                    <a href="contato.html">Contato</a>
                 </nav>
-
             </div>
         </header>
-        
+
         <main>
-            <div class="container">
-
-
-                <section class="hero">
-                    <div class="container">
-                        <h2>Solucões tecnológicas para o seu negócio</h2>
+            <section class="hero hero-home">
+                <div class="container hero-grid">
+                    <div class="hero-copy">
+                        <span class="section-tag">Parceira em tecnologia</span>
+                        <h1>Soluções digitais para empresas que querem crescer com organização.</h1>
                         <p>
-                            Suporte técnico, infraestrutura e desenvolvimento web para empresas que
-                            querem organizar melhor seus sistemas.
+                            Unimos suporte técnico, infraestrutura e desenvolvimento web para
+                            transformar demandas do dia a dia em processos mais estáveis.
                         </p>
-
-                        <a href="#contato" class="botao">Fale Conosco</a>
+                        <div class="hero-actions">
+                            <a href="contato.html" class="botao">Solicitar atendimento</a>
+                            <a href="servicos.html" class="botao botao-secundario">Ver serviços</a>
+                        </div>
                     </div>
-                </section>
 
-            <!-- seção apresentação -->
-            <section id="sobre">
-                <h2>Soluções em tecnologia</h2>
-
-                <p>
-                    Oferecemos suporte técnico, organização de infraestrutura
-                    e desenvolvimento de soluções simples para empresas.
-                </p>
+                    <div class="hero-highlight">
+                        <h2>Atendimento próximo e execução prática</h2>
+                        <p>
+                            Projetos institucionais, ajustes operacionais e apoio técnico com uma
+                            linguagem clara para sua equipe.
+                        </p>
+                        <ul class="hero-lista">
+                            <li>Suporte para demandas recorrentes</li>
+                            <li>Organização de ambientes e processos</li>
+                            <li>Sites institucionais com integração a APIs</li>
+                        </ul>
+                    </div>
+                </div>
             </section>
-            <section id="servicos">
-                <h2>Serviços</h2>
 
-             <div class="servicos" id="lista-servicos"></div>
-            </section>
+            <section class="section-panel">
+                <div class="container destaque-grid">
+                    <article class="destaque-card">
+                        <span class="section-tag">Sobre nós</span>
+                        <h2>Tecnologia com foco em clareza e resultado</h2>
+                        <p>
+                            A Tech Solutions ajuda empresas a estruturarem sua presença digital e
+                            seus fluxos técnicos sem complicação.
+                        </p>
+                        <a href="sobre.html" class="text-link">Conhecer a empresa</a>
+                    </article>
 
-            </div>
-            <section id="contato">
-                <h2>Contato</h2>
-                <p>Entre em contato para conhecer nossas soluçoes em tecnologia.</p>
+                    <article class="destaque-card">
+                        <span class="section-tag">Atuação</span>
+                        <h2>Serviços pensados para o cotidiano do negócio</h2>
+                        <p>
+                            Da resolução de problemas técnicos até o desenvolvimento web, atuamos
+                            onde a operação realmente precisa.
+                        </p>
+                        <a href="servicos.html" class="text-link">Explorar serviços</a>
+                    </article>
 
-                <form id="form-contato">
-                    <div>
-                        <label for="nome">Nome</label>
-                        <input type="text" id="nome" name="nome" required>
-                    </div>
-
-                    <div>
-                        <label for="email">Email</label>
-                        <input type="mensagem-form" id="email" name="email" required> 
-                    </div>
-
-                    <div>
-                        <label for="mensagem">Mensagem</label>
-                        <textarea id="mensagem-form" name="mensagem" rows="5" required></textarea>
-                    </div>
-
-                    <button type="submit" class="botao">Enviar</button>
-                </form>
-
-                <p id="status-formulario"></p>
+                    <article class="destaque-card">
+                        <span class="section-tag">Próximo passo</span>
+                        <h2>Vamos conversar sobre a sua necessidade</h2>
+                        <p>
+                            Abra um contato e descreva o cenário da sua empresa para montarmos o
+                            melhor caminho.
+                        </p>
+                        <a href="contato.html" class="text-link">Ir para contato</a>
+                    </article>
+                </div>
             </section>
         </main>
 
-        <footer>
+        <footer class="site-footer">
             <div class="container">
-            <p>© 2026 Tech Solutions</p>
+                <p>© 2026 Tech Solutions. Soluções em tecnologia para empresas.</p>
             </div>
         </footer>
-
-        <script src="script.js"></script>
     </body>
 </html>
