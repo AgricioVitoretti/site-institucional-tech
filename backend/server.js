@@ -4,6 +4,12 @@ const path = require("path");
 
 const app = express();
 
+const demoUser = {
+  email: "admin@techsolutions.com",
+  senha: "123456",
+  nome: "Administrador Tech Solutions"
+};
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../frontend")));
 app.use(express.json());
@@ -34,6 +40,28 @@ app.post("/api/contato", (req, res) => {
   res.json({
     sucesso: true,
     mensagem: "Formulário enviado com sucesso!"
+  });
+});
+
+app.post("/api/login", (req, res) => {
+  const { email, senha } = req.body;
+
+  if (email === demoUser.email && senha === demoUser.senha) {
+    res.json({
+      sucesso: true,
+      mensagem: "Login realizado com sucesso!",
+      usuario: {
+        nome: demoUser.nome,
+        email: demoUser.email
+      }
+    });
+
+    return;
+  }
+
+  res.status(401).json({
+    sucesso: false,
+    mensagem: "Email ou senha inválidos."
   });
 });
 

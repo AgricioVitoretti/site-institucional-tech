@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Tech Solutions | Login</title>
+    </head>
+    <body class="login-page">
+        <header class="site-header">
+            <div class="container">
+                <a class="brand" href="index.html">Tech Solutions</a>
+                <nav class="site-nav">
+                    <a href="index.html">Início</a>
+                    <a href="sobre.html">Sobre</a>
+                    <a href="servicos.html">Serviços</a>
+                    <a href="contato.html">Contato</a>
+                </nav>
+                <a class="nav-login ativo" href="login.html">Login</a>
+            </div>
+        </header>
+
+        <main>
+            <section class="page-hero login-hero">
+                <div class="container">
+                    <span class="section-tag">Área restrita</span>
+                    <h1>Acesse sua central de atendimento.</h1>
+                    <p>
+                        Entre com seus dados para acompanhar solicitações e visualizar os próximos passos.
+                    </p>
+                </div>
+            </section>
+
+            <section class="section-panel">
+                <div class="container login-shell">
+                    <aside class="login-side">
+                        <span class="section-tag">Acesso rápido</span>
+                        <h2>Painel de clientes</h2>
+                        <p>
+                            Entre para visualizar uma central com indicadores, chamados, andamento
+                            das entregas e visão consolidada do ambiente.
+                        </p>
+
+                        <ul class="hero-lista">
+                            <li>Status dos chamados em tempo real</li>
+                            <li>Resumo operacional da sua conta</li>
+                            <li>Próximas entregas organizadas em painel</li>
+                        </ul>
+
+                        <div class="login-demo" id="login-demo">
+                            <strong>Acesso de demonstração</strong>
+                            <p><code>admin@techsolutions.com</code></p>
+                            <p><code>123456</code></p>
+                        </div>
+                    </aside>
+
+                    <div class="login-card">
+                        <div class="login-card-top">
+                            <span class="login-orb"></span>
+                            <div>
+                                <strong>Entrar no painel</strong>
+                                <p>Use o acesso de demonstração para abrir a área autenticada.</p>
+                            </div>
+                        </div>
+
+                        <form id="form-login">
+                            <div class="campo-formulario">
+                                <label for="login-email">Email</label>
+                                <input type="email" id="login-email" name="email" placeholder="admin@techsolutions.com" required>
+                            </div>
+
+                            <div class="campo-formulario">
+                                <label for="login-senha">Senha</label>
+                                <input type="password" id="login-senha" name="senha" placeholder="Digite sua senha" required>
+                            </div>
+
+                            <button type="submit" class="botao">Entrar</button>
+                        </form>
+
+                        <p id="status-login"></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <p>© 2026 Tech Solutions. Soluções em tecnologia para empresas.</p>
+            </div>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
+</html>

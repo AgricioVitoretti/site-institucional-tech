@@ -1,11 +1,15 @@
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const loginStorageKey = "techsolutions:user";
 
 document.addEventListener("DOMContentLoaded", () => {
   setupHeaderState();
+  setupAuthShortcut();
   setupRevealAnimations();
   setupCounters();
   setupServicesPage();
   setupContactForm();
+  setupLoginArea();
+  setupDashboardPage();
 });
 
 function setupHeaderState() {
@@ -25,7 +29,7 @@ function setupHeaderState() {
 
 function setupRevealAnimations() {
   const revealTargets = document.querySelectorAll(
-    ".hero-copy, .hero-highlight, .page-hero .container, .destaque-card, .info-card, .metric-card, .contato-card, .servico"
+    ".hero-copy, .hero-highlight, .page-hero .container, .destaque-card, .info-card, .metric-card, .contato-card, .servico, .login-side, .login-card, .dashboard-hero .container, .dashboard-stat, .dashboard-card"
   );
 
   if (!revealTargets.length) {
@@ -111,6 +115,50 @@ function setupCounters() {
 
 function formatCounter(value) {
   return new Intl.NumberFormat("pt-BR").format(value);
+}
+
+function getSessionUser() {
+  const raw = localStorage.getItem(loginStorageKey);
+
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    localStorage.removeItem(loginStorageKey);
+    return null;
+  }
+}
+
+function clearSessionAndGoToLogin() {
+  localStorage.removeItem(loginStorageKey);
+  window.location.href = "login.html";
+}
+
+function setupAuthShortcut() {
+  const authLink = document.querySelector(".nav-login");
+
+  if (!authLink) {
+    return;
+  }
+
+  const sessaoSalva = getSessionUser();
+  const isLoginPage = document.body.classList.contains("login-page");
+
+  if (!sessaoSalva || isLoginPage) {
+    return;
+  }
+
+  authLink.textContent = "Logoff";
+  authLink.setAttribute("href", "#");
+  authLink.classList.add("ativo");
+
+  authLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    clearSessionAndGoToLogin();
+  });
 }
 
 function setupServicesPage() {
@@ -296,5 +344,90 @@ function setupContactForm() {
         botaoEnviar.disabled = false;
         botaoEnviar.textContent = "Enviar";
       });
+  });
+}
+
+function setupLoginArea() {
+  const formLogin = document.getElementById("form-login");
+
+  if (!formLogin) {
+    return;
+  }
+
+  const usuarioSalvo = getSessionUser();
+
+  if (usuarioSalvo) {
+    window.location.href = "dashboard.html";
+    return;
+  }
+
+  const email = document.getElementById("login-email");
+  const senha = document.getElementById("login-senha");
+  const status = document.getElementById("status-login");
+  const botaoEntrar = formLogin.querySelector("button");
+
+  formLogin.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    status.textContent = "Validando acesso...";
+    status.className = "";
+    botaoEntrar.disabled = true;
+    botaoEntrar.textContent = "Entrando...";
+
+    fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: email.value.trim(),
+        senha: senha.value
+      })
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.mensagem || "Não foi possível entrar.");
+        }
+
+        return data;
+      })
+      .then((data) => {
+        localStorage.setItem(loginStorageKey, JSON.stringify(data.usuario));
+        window.location.href = "dashboard.html";
+      })
+      .catch((error) => {
+        status.textContent = error.message;
+        status.className = "erro";
+      })
+      .finally(() => {
+        botaoEntrar.disabled = false;
+        botaoEntrar.textContent = "Entrar";
+      });
+  });
+}
+
+function setupDashboardPage() {
+  const title = document.getElementById("dashboard-title");
+
+  if (!title) {
+    return;
+  }
+
+  const usuario = getSessionUser();
+
+  if (!usuario) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  title.textContent = `Olá, ${usuario.nome}`;
+
+  const logout = document.getElementById("dashboard-logoff");
+
+  logout?.addEventListener("click", (event) => {
+    event.preventDefault();
+    clearSessionAndGoToLogin();
   });
 }
