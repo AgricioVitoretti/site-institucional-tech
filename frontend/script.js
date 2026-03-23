@@ -1,5 +1,6 @@
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const loginStorageKey = "techsolutions:user";
+const legacyLoginStorageKey = "techsolutions:user";
+const sessionStorageKey = "techsolutions:session";
 
 document.addEventListener("DOMContentLoaded", () => {
   setupHeaderState();
@@ -117,24 +118,63 @@ function formatCounter(value) {
   return new Intl.NumberFormat("pt-BR").format(value);
 }
 
-function getSessionUser() {
-  const raw = localStorage.getItem(loginStorageKey);
+function getSession() {
+  const raw = localStorage.getItem(sessionStorageKey);
 
   if (!raw) {
     return null;
   }
 
   try {
-    return JSON.parse(raw);
+    const session = JSON.parse(raw);
+
+    if (!session?.token || !session?.usuario) {
+      localStorage.removeItem(sessionStorageKey);
+      return null;
+    }
+
+    return session;
   } catch (error) {
-    localStorage.removeItem(loginStorageKey);
+    localStorage.removeItem(sessionStorageKey);
     return null;
   }
 }
 
+function getSessionUser() {
+  return getSession()?.usuario || null;
+}
+
+function getSessionToken() {
+  return getSession()?.token || null;
+}
+
+function saveSession(session) {
+  localStorage.removeItem(legacyLoginStorageKey);
+  localStorage.setItem(sessionStorageKey, JSON.stringify(session));
+}
+
+function clearSession() {
+  localStorage.removeItem(legacyLoginStorageKey);
+  localStorage.removeItem(sessionStorageKey);
+}
+
 function clearSessionAndGoToLogin() {
-  localStorage.removeItem(loginStorageKey);
+  clearSession();
   window.location.href = "login.html";
+}
+
+function fetchWithAuth(url, options = {}) {
+  const token = getSessionToken();
+  const headers = new Headers(options.headers || {});
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  return fetch(url, {
+    ...options,
+    headers
+  });
 }
 
 function setupAuthShortcut() {
@@ -144,7 +184,7 @@ function setupAuthShortcut() {
     return;
   }
 
-  const sessaoSalva = getSessionUser();
+  const sessaoSalva = getSession();
   const isLoginPage = document.body.classList.contains("login-page");
 
   if (!sessaoSalva || isLoginPage) {
@@ -172,7 +212,7 @@ function setupServicesPage() {
   const resultado = document.getElementById("resultado-servicos");
   const botoesFiltro = document.querySelectorAll(".filtro-servico");
   const categoriasPorServico = {
-    "Suporte técnico": "suporte",
+    "Suporte tecnico": "suporte",
     Infraestrutura: "infra",
     "Desenvolvimento Web": "web"
   };
@@ -195,10 +235,10 @@ function setupServicesPage() {
     if (!filtrados.length) {
       listaServicos.innerHTML = `
         <div class="servico-vazio">
-          Nenhum serviço encontrado. Tente outro termo ou selecione outro filtro.
+          Nenhum servico encontrado. Tente outro termo ou selecione outro filtro.
         </div>
       `;
-      resultado.textContent = "Nenhum serviço encontrado.";
+      resultado.textContent = "Nenhum servico encontrado.";
       return;
     }
 
@@ -215,7 +255,7 @@ function setupServicesPage() {
       listaServicos.appendChild(card);
     });
 
-    resultado.textContent = `Mostrando ${filtrados.length} serviço${filtrados.length > 1 ? "s" : ""}.`;
+    resultado.textContent = `Mostrando ${filtrados.length} servico${filtrados.length > 1 ? "s" : ""}.`;
   };
 
   botoesFiltro.forEach((botao) => {
@@ -233,7 +273,7 @@ function setupServicesPage() {
   fetch("/api/servicos")
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Falha ao buscar serviços.");
+        throw new Error("Falha ao buscar servicos.");
       }
 
       return response.json();
@@ -247,11 +287,11 @@ function setupServicesPage() {
       renderServicos();
     })
     .catch((error) => {
-      console.error("Erro ao buscar serviços:", error);
-      resultado.textContent = "Não foi possível carregar os serviços agora.";
+      console.error("Erro ao buscar servicos:", error);
+      resultado.textContent = "Nao foi possivel carregar os servicos agora.";
       listaServicos.innerHTML = `
         <div class="servico-vazio">
-          Ocorreu um problema ao carregar os serviços. Tente novamente em instantes.
+          Ocorreu um problema ao carregar os servicos. Tente novamente em instantes.
         </div>
       `;
     });
@@ -301,12 +341,12 @@ function setupContactForm() {
     event.preventDefault();
 
     if (!validarFormulario()) {
-      status.textContent = "Preencha nome, email válido e uma mensagem com pelo menos 10 caracteres.";
+      status.textContent = "Preencha nome, email valido e uma mensagem com pelo menos 10 caracteres.";
       status.className = "erro";
       return;
     }
 
-    status.textContent = "Enviando formulário...";
+    status.textContent = "Enviando formulario...";
     status.className = "";
     botaoEnviar.disabled = true;
     botaoEnviar.textContent = "Enviando...";
@@ -324,7 +364,7 @@ function setupContactForm() {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Falha ao enviar formulário.");
+          throw new Error("Falha ao enviar formulario.");
         }
 
         return response.json();
@@ -336,8 +376,8 @@ function setupContactForm() {
         atualizarContador();
       })
       .catch((error) => {
-        console.error("Erro ao enviar formulário.", error);
-        status.textContent = "Erro ao enviar formulário.";
+        console.error("Erro ao enviar formulario.", error);
+        status.textContent = "Erro ao enviar formulario.";
         status.className = "erro";
       })
       .finally(() => {
@@ -354,17 +394,25 @@ function setupLoginArea() {
     return;
   }
 
-  const usuarioSalvo = getSessionUser();
-
-  if (usuarioSalvo) {
-    window.location.href = "dashboard.html";
-    return;
-  }
-
   const email = document.getElementById("login-email");
   const senha = document.getElementById("login-senha");
   const status = document.getElementById("status-login");
   const botaoEntrar = formLogin.querySelector("button");
+  const sessaoSalva = getSession();
+
+  if (sessaoSalva) {
+    fetchWithAuth("/api/auth/validate")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Sessao expirada.");
+        }
+
+        window.location.href = "dashboard.html";
+      })
+      .catch(() => {
+        clearSession();
+      });
+  }
 
   formLogin.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -388,13 +436,16 @@ function setupLoginArea() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.mensagem || "Não foi possível entrar.");
+          throw new Error(data.mensagem || "Nao foi possivel entrar.");
         }
 
         return data;
       })
       .then((data) => {
-        localStorage.setItem(loginStorageKey, JSON.stringify(data.usuario));
+        saveSession({
+          token: data.token,
+          usuario: data.usuario
+        });
         window.location.href = "dashboard.html";
       })
       .catch((error) => {
@@ -415,16 +466,29 @@ function setupDashboardPage() {
     return;
   }
 
-  const usuario = getSessionUser();
+  const token = getSessionToken();
+  const logout = document.getElementById("dashboard-logoff");
 
-  if (!usuario) {
+  if (!token) {
     window.location.href = "login.html";
     return;
   }
 
-  title.textContent = `Olá, ${usuario.nome}`;
+  title.textContent = "Validando sessao...";
 
-  const logout = document.getElementById("dashboard-logoff");
+  fetchWithAuth("/api/auth/validate")
+    .then(async (response) => {
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.mensagem || "Nao foi possivel validar a sessao.");
+      }
+
+      title.textContent = `Ola, ${data.usuario.nome}`;
+    })
+    .catch(() => {
+      clearSessionAndGoToLogin();
+    });
 
   logout?.addEventListener("click", (event) => {
     event.preventDefault();
